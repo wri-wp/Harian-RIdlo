@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14251f">
+<title>Daily Habit Tracker</title>
+<style>
+:root{--bg:#f3f5f1;--card:#fff;--ink:#17251f;--muted:#718078;--line:#e2e8e2;--green:#246b4b;--green2:#dff1e5;--gold:#f0c879;--red:#a74747;--shadow:0 8px 26px rgba(20,45,32,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:760px;margin:auto;padding:0 16px calc(94px + env(safe-area-inset-bottom))}
+header{background:#14251f;color:#fff;margin:0 -16px 18px;padding:22px 20px 24px;border-radius:0 0 26px 26px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.eyebrow{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:#b9d4c5;font-weight:800}.brand{font-size:25px;font-weight:850;letter-spacing:-.8px;margin:5px 0}.sub{font-size:13px;color:#c4d4cc}.datepill{border:1px solid #496156;border-radius:14px;padding:9px 11px;background:#20382e;color:#fff;font-weight:700;max-width:150px}
+.hero{display:grid;grid-template-columns:1fr 106px;gap:12px;align-items:center;margin-top:22px}.big{font-size:39px;line-height:1;font-weight:850;letter-spacing:-1.5px}.small{font-size:12px;color:#c4d4cc;margin-top:7px}.ring{width:94px;height:94px;position:relative;display:grid;place-items:center}.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.ring strong{font-size:19px;z-index:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:21px;padding:17px;margin-bottom:14px;box-shadow:var(--shadow)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.sectionhead h2{font-size:17px;margin:0;letter-spacing:-.3px}.muted{font-size:12px;color:var(--muted)}
+.btn{border:0;border-radius:13px;padding:11px 14px;font-size:13px;font-weight:750;cursor:pointer;background:var(--green);color:#fff}.btn.secondary{background:#edf3ee;color:var(--green)}.btn.ghost{background:transparent;color:var(--muted);padding:8px}
+.habits{display:grid;gap:9px}.habit{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:16px;padding:12px;min-height:63px;transition:.15s}.habit.done{background:#f0f8f2;border-color:#c9e4d0}.check{width:27px;height:27px;border:2px solid #c5d1c8;border-radius:9px;display:grid;place-items:center;flex-shrink:0;background:#fff;color:#fff;font-weight:900;font-size:17px}.habit.done .check{background:var(--green);border-color:var(--green)}.habitname{font-size:14px;font-weight:720;flex:1;overflow-wrap:anywhere}.habit.done .habitname{color:#547060}.editname{border:0;background:transparent;color:#839188;font-size:18px;padding:5px;cursor:pointer}
+.progressbar{height:9px;background:#eaf0eb;border-radius:99px;overflow:hidden;margin-top:13px}.progressfill{height:100%;background:var(--green);border-radius:99px;width:0;transition:width .2s}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{padding:13px 10px;background:#f5f8f5;border-radius:15px}.stat strong{display:block;font-size:22px;letter-spacing:-.5px}.stat span{font-size:11px;color:var(--muted)}
+.calendarhead{display:flex;align-items:center;justify-content:space-between;gap:8px}.monthlabel{font-size:15px;font-weight:800}.monthnav{display:flex;gap:6px}.monthnav button{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:18px;color:var(--ink)}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}.dow{text-align:center;color:var(--muted);font-size:10px;font-weight:750;padding:5px 0}.day{border:1px solid transparent;border-radius:10px;min-height:39px;background:#f4f7f4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--ink);font-size:12px;cursor:pointer}.day.empty{background:transparent;cursor:default}.day.selected{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}.day.today{font-weight:900}.dot{width:5px;height:5px;border-radius:50%;background:#b6c2ba}.day.hasdata .dot{background:var(--green)}.day.full{background:#dff1e5}.day.future{opacity:.35}
+.settings{display:grid;gap:10px}.settingrow{display:flex;align-items:center;gap:10px}.settingrow label{flex:1;font-size:13px;font-weight:650}.settingrow input{width:56%;padding:11px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+.notice{font-size:12px;color:var(--muted);line-height:1.55}.footer{padding:10px 4px 18px;text-align:center;color:var(--muted);font-size:11px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:9px 10px calc(9px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:6px}
+nav button{flex:1;max-width:180px;border:0;border-radius:13px;background:transparent;color:var(--muted);padding:10px 7px;font-weight:750;font-size:12px}nav button.active{background:var(--green2);color:var(--green)}
+.view{display:none}.view.active{display:block}
+.toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:#14251f;color:#fff;padding:11px 15px;border-radius:13px;font-size:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.2s;z-index:9}.toast.show{opacity:1}
+@media(min-width:600px){header{margin-top:16px;border-radius:26px}.app{padding-top:1px}.habit{padding:14px}.calendar{gap:8px}.day{min-height:45px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="top">
+    <div><div class="eyebrow">Small steps, every day</div><div class="brand">Daily Habit Tracker</div><div class="sub">Bangun konsistensi, bukan kesempurnaan.</div></div>
+    <button class="datepill" id="todayBtn">Hari ini</button>
+  </div>
+  <div class="hero">
+    <div><div class="small">PROGRES HARI INI</div><div class="big" id="heroPercent">0%</div><div class="small" id="heroCount">0 dari 5 kebiasaan selesai</div></div>
+    <div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#395047" stroke-width="8"/><circle id="ringProgress" cx="50" cy="50" r="42" fill="none" stroke="#a9dfb9" stroke-width="8" stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="263.89"/></svg><strong id="ringText">0%</strong></div>
+  </div>
+</header>
+
+<section class="view active" id="view-home">
+  <div class="card">
+    <div class="sectionhead"><div><h2>Checklist harian</h2><div class="muted" id="selectedDateLabel">Catat kebiasaanmu hari ini</div></div><button class="btn secondary" id="resetDay">Reset</button></div>
+    <div class="habits" id="habitList"></div>
+    <div class="progressbar"><div class="progressfill" id="progressFill"></div></div>
+    <div class="muted" style="margin-top:8px" id="progressCaption">Satu langkah kecil tetap berarti.</div>
+  </div>
+  <div class="card">
+    <div class="sectionhead"><h2>Ringkasan</h2><span class="muted">365 hari</span></div>
+    <div class="statgrid">
+      <div class="stat"><strong id="statToday">0%</strong><span>Progres hari ini</span></div>
+      <div class="stat"><strong id="statWeek">0%</strong><span>Rata-rata 7 hari</span></div>
+      <div class="stat"><strong id="statDone">0</strong><span>Checklist selesai</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="sectionhead"><h2>Kalender kebiasaan</h2><div class="monthnav"><button id="prevMonth" aria-label="Bulan sebelumnya">‹</button><button id="nextMonth" aria-label="Bulan berikutnya">›</button></div></div>
+    <div class="calendarhead"><div class="monthlabel" id="monthLabel"></div><div class="muted">Ketuk tanggal untuk melihat</div></div>
+    <div class="calendar" id="calendar"></div>
+  </div>
+</section>
+
+<section class="view" id="view-settings">
+  <div class="card">
+    <div class="sectionhead"><div><h2>Atur kebiasaan</h2><div class="muted">Pilih maksimal lima kebiasaan utama.</div></div></div>
+    <div class="settings" id="settingsList"></div>
+    <button class="btn" style="width:100%;margin-top:15px" id="saveHabits">Simpan kebiasaan</button>
+  </div>
+  <div class="card">
+    <div class="sectionhead"><h2>Data tracker</h2></div>
+    <p class="notice">Catatan disimpan di penyimpanan browser pada perangkat ini. Jika data browser dihapus atau kamu membuka tracker di browser/perangkat lain, catatan lokal mungkin tidak ikut terbawa. Ekspor cadangan secara berkala.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="exportData">Ekspor cadangan</button><button class="btn secondary" id="importBtn">Impor cadangan</button><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+    <p class="notice" style="margin-top:13px">Aplikasi ini dibuat berdasarkan PDF yang kamu kirim. File Excel asli belum tersedia, jadi rumus internal Excel belum disalin.</p>
+  </div>
+</section>
+<div class="footer">Konsistensi lebih penting daripada sempurna. Mulai lagi kapan saja. 🌱</div>
+</div>
+<nav><button class="active" data-view="home">☑ Hari ini</button><button data-view="settings">⚙ Kebiasaan & data</button></nav>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='dailyHabitTracker_v1';
+const defaults=['Minum air 8 gelas','Olahraga 15 menit','Membaca 10 menit','Menulis jurnal singkat','Tidur sebelum 23.00'];
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const parseDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fmtDate=s=>parseDate(s).toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+let state={habits:defaults.slice(),records:{},selected:todayISO(),month:(()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`})()};
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'{}');if(Array.isArray(v.habits)&&v.habits.length===5)state.habits=v.habits;if(v.records&&typeof v.records==='object')state.records=v.records;}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({habits:state.habits,records:state.records}));}catch(e){toast('Penyimpanan browser penuh atau tidak tersedia. Ekspor cadangan.');}}
+function record(date=state.selected){if(!state.records[date])state.records[date]=[false,false,false,false,false];while(state.records[date].length<5)state.records[date].push(false);return state.records[date]}
+function pct(arr){return Math.round(arr.filter(Boolean).length/5*100)}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
+function render(){renderHeader();renderHabits();renderStats();renderCalendar();renderSettings()}
+function renderHeader(){const a=record();const n=a.filter(Boolean).length;const p=pct(a);document.getElementById('heroPercent').textContent=p+'%';document.getElementById('heroCount').textContent=`${n} dari 5 kebiasaan selesai`;document.getElementById('ringText').textContent=p+'%';document.getElementById('ringProgress').style.strokeDashoffset=263.89*(1-p/100);document.getElementById('selectedDateLabel').textContent=state.selected===todayISO()?'Catat kebiasaanmu hari ini':fmtDate(state.selected);document.getElementById('progressFill').style.width=p+'%';document.getElementById('progressCaption').textContent=p===100?'Hebat! Semua kebiasaan hari ini selesai.':p===0?'Mulai dari satu kebiasaan kecil.':`${n} selesai — lanjutkan sesuai kemampuanmu.`;document.getElementById('todayBtn').textContent=state.selected===todayISO()?'Hari ini':'Kembali hari ini'}
+function renderHabits(){const el=document.getElementById('habitList'),a=record();el.innerHTML='';state.habits.forEach((h,i)=>{const row=document.createElement('div');row.className='habit'+(a[i]?' done':'');row.innerHTML=`<div class="check">${a[i]?'✓':''}</div><div class="habitname"></div><button class="editname" aria-label="Ubah nama kebiasaan" title="Ubah nama">✎</button>`;row.querySelector('.habitname').textContent=h;row.querySelector('.check').addEventListener('click',()=>toggle(i));row.querySelector('.habitname').addEventListener('click',()=>toggle(i));row.querySelector('.editname').addEventListener('click',()=>{const v=prompt('Nama kebiasaan '+(i+1),state.habits[i]);if(v!==null&&v.trim()){state.habits[i]=v.trim().slice(0,70);save();render();toast('Nama kebiasaan diperbarui')}});el.appendChild(row)})}
+function toggle(i){record()[i]=!record()[i];save();render()}
+function renderStats(){const t=todayISO(),a=record(t);document.getElementById('statToday').textContent=pct(a)+'%';document.getElementById('statDone').textContent=Object.values(state.records).reduce((sum,r)=>sum+(r||[]).filter(Boolean).length,0);let sum=0;for(let i=0;i<7;i++){let d=new Date();d.setDate(d.getDate()-i);let s=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;sum+=pct(state.records[s]||[false,false,false,false,false])}document.getElementById('statWeek').textContent=Math.round(sum/7)+'%'}
+function renderCalendar(){const [y,m]=state.month.split('-').map(Number),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate();document.getElementById('monthLabel').textContent=first.toLocaleDateString('id-ID',{month:'long',year:'numeric'});const el=document.getElementById('calendar');el.innerHTML='';['Min','Sen','Sel','Rab','Kam','Jum','Sab'].forEach(x=>{let d=document.createElement('div');d.className='dow';d.textContent=x;el.appendChild(d)});for(let i=0;i<first.getDay();i++){let e=document.createElement('div');e.className='day empty';el.appendChild(e)}for(let n=1;n<=days;n++){let s=`${y}-${String(m).padStart(2,'0')}-${String(n).padStart(2,'0')}`,r=state.records[s],btn=document.createElement('button');btn.className='day';if(s===state.selected)btn.classList.add('selected');if(s===todayISO())btn.classList.add('today');if(r&&r.some(Boolean))btn.classList.add('hasdata');if(r&&r.every(Boolean))btn.classList.add('full');if(s>todayISO()&&!r)btn.classList.add('future');btn.innerHTML=`<span>${n}</span><span class="dot"></span>`;btn.addEventListener('click',()=>{state.selected=s;render()});el.appendChild(btn)}}
+function renderSettings(){const el=document.getElementById('settingsList');el.innerHTML='';state.habits.forEach((h,i)=>{const row=document.createElement('div');row.className='settingrow';const label=document.createElement('label');label.textContent='Habit '+(i+1);const input=document.createElement('input');input.value=h;input.maxLength=70;input.id='habitSetting'+i;input.setAttribute('aria-label','Nama habit '+(i+1));row.append(label,input);el.appendChild(row)})}
+document.getElementById('saveHabits').addEventListener('click',()=>{state.habits=state.habits.map((_,i)=>document.getElementById('habitSetting'+i).value.trim()||'Habit '+(i+1));save();render();toast('Kebiasaan berhasil disimpan')});
+document.getElementById('resetDay').addEventListener('click',()=>{if(confirm('Hapus semua centang untuk tanggal '+fmtDate(state.selected)+'?')){state.records[state.selected]=[false,false,false,false,false];save();render();toast('Checklist tanggal ini direset')}});
+document.getElementById('todayBtn').addEventListener('click',()=>{state.selected=todayISO();state.month=todayISO().slice(0,7);render()});
+document.getElementById('prevMonth').addEventListener('click',()=>{let [y,m]=state.month.split('-').map(Number);let d=new Date(y,m-2,1);state.month=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;renderCalendar()});
+document.getElementById('nextMonth').addEventListener('click',()=>{let [y,m]=state.month.split('-').map(Number);let d=new Date(y,m,1);state.month=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;renderCalendar()});
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+b.dataset.view));if(b.dataset.view==='settings')renderSettings()}));
+document.getElementById('exportData').addEventListener('click',()=>{const data={format:'daily-habit-tracker-v1',exportedAt:new Date().toISOString(),habits:state.habits,records:state.records};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='daily-habit-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Cadangan diekspor')});
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const v=JSON.parse(await f.text());if(!Array.isArray(v.habits)||!v.records||typeof v.records!=='object')throw Error('invalid');if(!confirm('Impor cadangan akan mengganti data tracker saat ini. Lanjutkan?'))return;state.habits=Array.from({length:5},(_,i)=>String(v.habits[i]||('Habit '+(i+1))));state.records=v.records;save();render();toast('Cadangan berhasil diimpor')}catch(err){toast('File cadangan tidak valid')}e.target.value=''});
+load();render();
+</script>
+</body>
+</html>
